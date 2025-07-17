@@ -1,13 +1,3 @@
-Great! Since you’re familiar with Express backend, learning Laravel will feel very intuitive — Laravel is a full-featured PHP framework with MVC structure, routing, middleware, ORM, validation, etc., just like Express but with more built-in tools and conventions.
-
-I’ll walk you through a **complete Laravel backend app** step-by-step, explaining each part and comparing it to Express concepts you might know.
-
----
-
-# Laravel Backend: Complete Walkthrough
-
----
-
 ## 1. Project Setup
 
 ```bash
