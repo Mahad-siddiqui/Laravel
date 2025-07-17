@@ -245,4 +245,202 @@ public function testUserListing()
 
 ---
 
-####---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+##------------------------------------------------------------------------------------------------------------------------------------------------
+Perfect! Moving your Todo app from a static array to a **database** with Laravel’s Eloquent ORM:
+
+* Create a database migration for `todos` table
+* Create a `Todo` model
+* Update your controller to use the database instead of the static array
+* Test the new API endpoints
+
+---
+
+# Step 1: Configure Database
+
+1. Open your `.env` file in the project root.
+2. Set your database connection details, e.g., for MySQL:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+
+Make sure you create the database (`your_database_name`) beforehand using phpMyAdmin or MySQL CLI.
+
+---
+
+# Step 2: Create Migration for Todos Table
+
+Run this command to create a migration:
+
+```bash
+php artisan make:migration create_todos_table --create=todos
+```
+
+Open the new migration file in `database/migrations/xxxx_xx_xx_create_todos_table.php` and update it like this:
+
+```php
+public function up()
+{
+    Schema::create('todos', function (Blueprint $table) {
+        $table->id();
+        $table->string('task');
+        $table->boolean('completed')->default(false);
+        $table->timestamps();
+    });
+}
+```
+
+Run migration to create the table:
+
+```bash
+php artisan migrate
+```
+
+---
+
+# Step 3: Create Todo Model
+
+Run:
+
+```bash
+php artisan make:model Todo
+```
+
+Open `app/Models/Todo.php` and ensure it looks like this:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Todo extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['task', 'completed'];
+}
+```
+
+`$fillable` allows mass assignment for those fields.
+
+---
+
+# Step 4: Update Controller to Use Eloquent
+
+Open your `app/Http/Controllers/TodoController.php`.
+
+Replace the static array logic with database queries:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Todo;
+use Illuminate\Http\Request;
+
+class TodoController extends Controller
+{
+    // List all todos
+    public function index()
+    {
+        $todos = Todo::all();
+        return response()->json($todos);
+    }
+
+    // Create a new todo
+    public function store(Request $request)
+    {
+        $request->validate([
+            'task' => 'required|string|max:255',
+        ]);
+
+        $todo = Todo::create([
+            'task' => $request->task,
+            'completed' => false,
+        ]);
+
+        return response()->json($todo, 201);
+    }
+
+    // Show a single todo
+    public function show($id)
+    {
+        $todo = Todo::find($id);
+
+        if (!$todo) {
+            return response()->json(['message' => 'Todo not found'], 404);
+        }
+
+        return response()->json($todo);
+    }
+
+    // Update a todo
+    public function update(Request $request, $id)
+    {
+        $todo = Todo::find($id);
+
+        if (!$todo) {
+            return response()->json(['message' => 'Todo not found'], 404);
+        }
+
+        $request->validate([
+            'task' => 'sometimes|string|max:255',
+            'completed' => 'sometimes|boolean',
+        ]);
+
+        $todo->update($request->only(['task', 'completed']));
+
+        return response()->json($todo);
+    }
+
+    // Delete a todo
+    public function destroy($id)
+    {
+        $todo = Todo::find($id);
+
+        if (!$todo) {
+            return response()->json(['message' => 'Todo not found'], 404);
+        }
+
+        $todo->delete();
+
+        return response()->json(['message' => 'Todo deleted']);
+    }
+}
+```
+
+---
+
+# Step 5: Test Your API
+
+Start the Laravel server:
+
+```bash
+php artisan serve
+```
+
+Use Postman or curl to test your CRUD endpoints as before — now the data is stored in the database!
+
+---
+
+# Summary:
+
+| Step         | Command/File               | Purpose                       |
+| ------------ | -------------------------- | ----------------------------- |
+| Configure DB | `.env`                     | Set DB credentials            |
+| Migration    | `make:migration` + migrate | Create `todos` table          |
+| Model        | `make:model Todo`          | Represent todos in DB         |
+| Controller   | Modify to use Eloquent     | CRUD with DB instead of array |
+| Test         | Postman or curl            | Verify everything works       |
+
+---
+
