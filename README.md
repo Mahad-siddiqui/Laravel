@@ -636,5 +636,14 @@ Use **Postman** or **curl** to test:
 | PUT    | `/api/todos/{id}` | Update todo       |
 | DELETE | `/api/todos/{id}` | Delete todo       |
 
----
+--- 
+# 🎓 Final Flow Overview
+
+.env file      => Connects Laravel to database
+Migration      => Defines DB structure
+php artisan migrate => Applies structure to real DB
+Model (Todo)   => Laravel's code interface for the table
+Controller     => Uses the Model to handle requests (CRUD)
+Routes         => Connects API endpoints to controller actions
+
 
