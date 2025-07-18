@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 
 namespace App\Http\Controllers;
 
@@ -24,6 +24,7 @@ class TodoController extends Controller
     {
         $newTodo = [
             'id' => count(self::$todos) + 1,
+            // const title = req.body.title;
             'title' => $request->input('title'),
             'completed' => false,
         ];
@@ -60,4 +61,83 @@ class TodoController extends Controller
         return response()->json(['message' => 'Todo not found'], 404);
     }
 }
+ -->
 
+
+ <?php
+
+namespace App\Http\Controllers;
+
+use App\Models\MahadTodo;
+use Illuminate\Http\Request;
+
+class TodoController extends Controller
+{
+    // List all todos
+    public function index()
+    {
+        $todos = MahadTodo::all();
+        return response()->json($todos);
+    }
+
+    // Create a new todo
+    public function store(Request $request)
+    {
+        $request->validate([
+            'task' => 'required|string|max:255',
+            'completed' => 'boolean',
+        ]);
+
+        $todo = MahadTodo::create([
+            'task' => $request->task,
+            'completed' => $request->completed ?? false,
+        ]);
+
+        return response()->json($todo, 201);
+    }
+
+    // Show a single todo
+    public function show($id)
+    {
+        $todo = MahadTodo::find($id);
+
+        if (!$todo) {
+            return response()->json(['message' => 'Todo not found'], 404);
+        }
+
+        return response()->json($todo);
+    }
+
+    // Update a todo
+    public function update(Request $request, $id)
+    {
+        $todo = MahadTodo::find($id);
+
+        if (!$todo) {
+            return response()->json(['message' => 'Todo not found'], 404);
+        }
+
+        $request->validate([
+            'task' => 'sometimes|string|max:255',
+            'completed' => 'sometimes|boolean',
+        ]);
+
+        $todo->update($request->only(['task', 'completed']));
+
+        return response()->json($todo);
+    }
+
+    // Delete a todo
+    public function destroy($id)
+    {
+        $todo = MahadTodo::find($id);
+
+        if (!$todo) {
+            return response()->json(['message' => 'Todo not found'], 404);
+        }
+
+        $todo->delete();
+
+        return response()->json(['message' => 'Todo deleted']);
+    }
+}
