@@ -633,7 +633,7 @@ Use **Postman** or **curl** to test:
 | GET    | `/api/todos`      | List all todos    |
 | POST   | `/api/todos`      | Create new todo   |
 | GET    | `/api/todos/{id}` | Get specific todo |
-| PUT    | `/api/todos/{id}` | Update todo       |
+3| PUT    | `/api/todos/{id}` | Update todo       |
 | DELETE | `/api/todos/{id}` | Delete todo       |
 
 --- 
@@ -646,4 +646,12 @@ Use **Postman** or **curl** to test:
 - Controller     => Uses the Model to handle requests (CRUD)
 - Routes         => Connects API endpoints to controller actions
 
+# Extensions 
+- PHP intelliSense
+- PHP Namespace Resolver
+- Laravel Extra IntelliSense
+- Laravel-Blade
+- Laravel blade Snippets
+- Laravel goto view
+- PHP DocBlocker
 
