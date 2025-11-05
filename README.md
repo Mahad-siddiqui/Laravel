@@ -654,4 +654,3 @@ Use **Postman** or **curl** to test:
 - Laravel blade Snippets
 - Laravel goto view
 - PHP DocBlocker
-
