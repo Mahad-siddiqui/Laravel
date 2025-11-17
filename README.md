@@ -1,4 +1,4 @@
-## 1. Project Setup
+# 1. Project Setup
 
 ```bash
 composer create-project laravel/laravel laravel-app
